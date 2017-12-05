@@ -7,9 +7,9 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>706294552689-hrf0vdjsrh794o004jcn38rmu8bhfb69.apps.googleusercontent.com</string>
+	<string>706294552689-qldhe436l9ikl6vcuq03to3k64edpthn.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.706294552689-hrf0vdjsrh794o004jcn38rmu8bhfb69</string>
+	<string>com.googleusercontent.apps.706294552689-qldhe436l9ikl6vcuq03to3k64edpthn</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAqk6cZP_X3VJs1CBHqFXn1nbLNaSWRhsg</string>
 	<key>GCM_SENDER_ID</key>
@@ -17,7 +17,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>co.benestio.fakestargram</string>
+	<string>co.benestudio.fakestagram</string>
 	<key>PROJECT_ID</key>
 	<string>fakestagram-d8efa</string>
 	<key>STORAGE_BUCKET</key>
@@ -33,7 +33,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:706294552689:ios:e15e6d2a9a7a6449</string>
+	<string>1:706294552689:ios:417d447fd0f0e9a3</string>
 	<key>DATABASE_URL</key>
 	<string>https://fakestagram-d8efa.firebaseio.com</string>
 </dict>
