@@ -9,30 +9,69 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  ActivityIndicator,
+  FlatList,
+  Image,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const Photo = ({photo}) => {
+  return (
+    <View style={styles.imageContainer}>
+      <Image style={styles.image} resizeMode="cover" source={{ uri: photo.uri }} />
+      <Text>Likes: {photo.likes}</Text>
+    </View>
+  );
+};
 
 export default class App extends Component<{}> {
+  constructor() {
+    super();
+    this.ref = firebase.firestore().collection('photos');
+    this.unsubscribe = null;
+    this.state = {
+      photos: [],
+      loading: true,
+    };
+  }
+
+  componentDidMount() {
+    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  onCollectionUpdate = (querySnapshot) => {
+    const photos = [];
+    querySnapshot.forEach((doc) => {
+      const { uri, likes } = doc.data();
+      photos.push({
+        key: doc.id, // Document ID
+        doc, // DocumentSnapshot
+        uri,
+        likes,
+      });
+    });
+    this.setState({
+      photos,
+      loading: false,
+   });
+  }
+
   render() {
+    if (this.state.loading) {
+      return <ActivityIndicator size="large" />;
+    }
+
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
+        <FlatList
+          data={this.state.photos}
+          renderItem={({ item }) => <Photo photo={item}/>}
+        />
       </View>
     );
   }
@@ -45,14 +84,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  imageContainer: {
+    width: 320,
+    height: 220,
+    padding: 5,
+    marginTop: 20,
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
+  image: {
+    width: 300,
+    height: 200,
     marginBottom: 5,
-  },
+  }
 });
