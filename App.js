@@ -13,14 +13,20 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Dimensions,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
-const Photo = ({photo}) => {
+const { width, height } = Dimensions.get('window');
+
+const Post = ({photo}) => {
   return (
     <View style={styles.imageContainer}>
       <Image style={styles.image} resizeMode="cover" source={{ uri: photo.uri }} />
-      <Text>Likes: {photo.likes}</Text>
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{photo.title}</Text>
+        <Text style={styles.likes}>&hearts; {photo.likes}</Text>
+      </View>
     </View>
   );
 };
@@ -47,10 +53,11 @@ export default class App extends Component<{}> {
   onCollectionUpdate = (querySnapshot) => {
     const photos = [];
     querySnapshot.forEach((doc) => {
-      const { uri, likes } = doc.data();
+      const { uri, likes, title } = doc.data();
       photos.push({
         key: doc.id, // Document ID
         doc, // DocumentSnapshot
+        title,
         uri,
         likes,
       });
@@ -68,9 +75,12 @@ export default class App extends Component<{}> {
 
     return (
       <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Fakestagram</Text>
+        </View>
         <FlatList
           data={this.state.photos}
-          renderItem={({ item }) => <Photo photo={item}/>}
+          renderItem={({ item }) => <Post photo={item}/>}
         />
       </View>
     );
@@ -82,17 +92,40 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#ffffff',
   },
   imageContainer: {
-    width: 320,
-    height: 220,
-    padding: 5,
+    width,
+    height: 345,
+    padding: 25,
     marginTop: 20,
+    backgroundColor: '#fefefe',
+    alignItems: 'center',
+    // justifyContent: 'center',
   },
   image: {
+    flex: 1,
     width: 300,
-    height: 200,
+    // height: 300,
     marginBottom: 5,
-  }
+  },
+  textContainer: {
+    flexDirection: 'row',
+    alignContent: 'space-between',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+  },
+  headerContainer: {
+    width,
+    height: Platform.OS === 'ios' ? 70 : 50,
+    backgroundColor: '#fefefe',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: '600',
+  },
 });
