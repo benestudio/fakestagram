@@ -15,7 +15,7 @@ target 'fakestagram' do
   ]
 
   pod 'Firebase/Core'
-
+  pod 'Firebase/Firestore'
 
   target 'fakestagramTests' do
     inherit! :search_paths
