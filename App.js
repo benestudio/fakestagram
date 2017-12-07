@@ -14,6 +14,7 @@ import {
   FlatList,
   Image,
   Dimensions,
+  Button,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
@@ -70,6 +71,14 @@ export default class App extends Component<{}> {
    });
   }
 
+  addRandomPost = () => {
+    this.ref.add({
+      title: 'Added post by random button',
+      likes: Math.floor((Math.random() * 10) + 1),
+      uri: `https://picsum.photos/200/300?image=${Math.floor((Math.random() * 100) + 1)}`,
+    });
+  }
+
   render() {
     if (this.state.loading) {
       return <ActivityIndicator size="large" />;
@@ -84,6 +93,7 @@ export default class App extends Component<{}> {
           data={this.state.posts}
           renderItem={({ item }) => <Post post={item}/>}
         />
+        <Button title="Add random post" onPress={() => this.addRandomPost()} />
       </View>
     );
   }
