@@ -19,13 +19,15 @@ import firebase from 'react-native-firebase';
 
 const { width, height } = Dimensions.get('window');
 
-const Post = ({photo}) => {
+const Post = ({post}) => {
   return (
     <View style={styles.imageContainer}>
-      <Image style={styles.image} resizeMode="cover" source={{ uri: photo.uri }} />
+      <Image style={styles.image} resizeMode="cover" source={{ uri: post.uri }} />
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{photo.title}</Text>
-        <Text style={styles.likes}>&hearts; {photo.likes}</Text>
+        <Text style={styles.title}>{post.title}</Text>
+        <View style={styles.likesContainer}>
+          <Text style={styles.likes}>&hearts; {post.likes}</Text>
+        </View>
       </View>
     </View>
   );
@@ -34,10 +36,10 @@ const Post = ({photo}) => {
 export default class App extends Component<{}> {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection('photos');
+    this.ref = firebase.firestore().collection('posts');
     this.unsubscribe = null;
     this.state = {
-      photos: [],
+      posts: [],
       loading: true,
     };
   }
@@ -51,10 +53,10 @@ export default class App extends Component<{}> {
   }
 
   onCollectionUpdate = (querySnapshot) => {
-    const photos = [];
+    const posts = [];
     querySnapshot.forEach((doc) => {
       const { uri, likes, title } = doc.data();
-      photos.push({
+      posts.push({
         key: doc.id, // Document ID
         doc, // DocumentSnapshot
         title,
@@ -63,7 +65,7 @@ export default class App extends Component<{}> {
       });
     });
     this.setState({
-      photos,
+      posts,
       loading: false,
    });
   }
@@ -79,8 +81,8 @@ export default class App extends Component<{}> {
           <Text style={styles.headerText}>Fakestagram</Text>
         </View>
         <FlatList
-          data={this.state.photos}
-          renderItem={({ item }) => <Post photo={item}/>}
+          data={this.state.posts}
+          renderItem={({ item }) => <Post post={item}/>}
         />
       </View>
     );
@@ -110,10 +112,17 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flexDirection: 'row',
-    alignContent: 'space-between',
+    alignContent: 'center',
     justifyContent: 'space-between',
     alignItems: 'center',
-    alignSelf: 'flex-start',
+    paddingLeft: 15,
+  },
+  title: {
+    flex: 4,
+  },
+  likesContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   headerContainer: {
     width,
