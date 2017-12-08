@@ -82,11 +82,20 @@ export default class App extends Component<{}> {
     try {
       const response = await firebase.auth().signInWithEmailAndPassword(this.state.emailValue, this.state.passwordValue);
       console.log(response);
+      this.setState({
+        loggingIn: false,
+        emailValue: '',
+        passwordValue: '',
+        hasError: false,
+        error: '',
+      });
     } catch (error) {
       console.log(error);
       this.setState({ loggingIn: false, error: error.toString(), hasError: true });
     }
-    this.setState({ loggingIn: false });
+    this.setState({
+      loggingIn: false,
+    });
   }
 
   onChangeLogin = (e, type) => {
