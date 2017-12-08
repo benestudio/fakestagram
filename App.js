@@ -6,51 +6,50 @@
 
 import React, { Component } from 'react';
 import {
-  Platform,
-  StyleSheet,
   Text,
   View,
   ActivityIndicator,
   FlatList,
-  Image,
-  Dimensions,
   Button,
+  TouchableOpacity,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
-const { width, height } = Dimensions.get('window');
-
-const Post = ({post}) => {
-  return (
-    <View style={styles.imageContainer}>
-      <Image style={styles.image} resizeMode="cover" source={{ uri: post.uri }} />
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{post.title}</Text>
-        <View style={styles.likesContainer}>
-          <Text style={styles.likes}>&hearts; {post.likes}</Text>
-        </View>
-      </View>
-    </View>
-  );
-};
+import { Login, Post } from './src';
+import { styles } from './styles';
 
 export default class App extends Component<{}> {
   constructor() {
     super();
     this.ref = firebase.firestore().collection('posts');
-    this.unsubscribe = null;
+    this.firestoreUnsubscriber = null;
+    this.authUnsubscriber = null;
     this.state = {
       posts: [],
       loading: true,
+      loggingIn: false,
+      user: null,
+      emailValue: '',
+      passwordValue: '',
+      hasError: false,
+      error: '',
     };
   }
 
   componentDidMount() {
-    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
+    this.authUnsubscriber = firebase.auth().onAuthStateChanged((user) => {
+      this.setState({ user });
+    });
+    this.firestoreUnsubscriber = this.ref.onSnapshot(this.onCollectionUpdate)
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    if (this.authUnsubscriber) {
+      this.authUnsubscriber();
+    }
+    if (this.firestoreUnsubscriber) {
+      this.firestoreUnsubscriber();
+    }
   }
 
   onCollectionUpdate = (querySnapshot) => {
@@ -79,6 +78,21 @@ export default class App extends Component<{}> {
     });
   }
 
+  onLogin = async () => {
+    try {
+      const response = await firebase.auth().signInWithEmailAndPassword(this.state.emailValue, this.state.passwordValue);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      this.setState({ loggingIn: false, error: error.toString(), hasError: true });
+    }
+    this.setState({ loggingIn: false });
+  }
+
+  onChangeLogin = (e, type) => {
+    this.setState({ [`${type}Value`]: e });
+  }
+
   render() {
     if (this.state.loading) {
       return <ActivityIndicator size="large" />;
@@ -88,62 +102,27 @@ export default class App extends Component<{}> {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Fakestagram</Text>
+          {this.state.user && (<TouchableOpacity style={styles.headerButton} onPress={() => firebase.auth().signOut()}><Text>Logout</Text></TouchableOpacity>)}
         </View>
-        <FlatList
+        {this.state.user ?
+        (
+          <FlatList
           data={this.state.posts}
           renderItem={({ item }) => <Post post={item}/>}
+          ListFooterComponent={<Button title="Add random post" onPress={() => this.addRandomPost()} />}
         />
-        <Button title="Add random post" onPress={() => this.addRandomPost()} />
+        )
+        :
+        (<Login
+          emailValue={this.state.emailValue}
+          passwordValue={this.state.passwordValue}
+          onChange={(e, type) => this.onChangeLogin(e, type)}
+          loggingIn={this.state.loggingIn}
+          hasError={this.state.hasError}
+          errorMessage={this.state.error}
+          onPress={() => this.setState(state => ({ loggingIn: true }), this.onLogin)}
+        />)}
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-  },
-  imageContainer: {
-    width,
-    height: 315,
-    padding: 25,
-    backgroundColor: '#fefefe',
-    alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  image: {
-    flex: 1,
-    width: 300,
-    // height: 300,
-    marginBottom: 5,
-  },
-  textContainer: {
-    flexDirection: 'row',
-    alignContent: 'center',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: 15,
-  },
-  title: {
-    flex: 4,
-  },
-  likesContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  headerContainer: {
-    width,
-    height: Platform.OS === 'ios' ? 70 : 50,
-    backgroundColor: '#fefefe',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-});
