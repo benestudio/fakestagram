@@ -1,2 +1,2 @@
-export * from './Post';
-export * from './Login';
+export * from './screens/Post';
+export * from './screens/Login';

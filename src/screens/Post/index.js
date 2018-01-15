@@ -1,11 +1,15 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
-import { styles } from '../../styles';
+import { styles } from '../../../styles';
 
 const Post = ({ post }) => {
   return (
     <View style={styles.imageContainer}>
-      <Image style={styles.image} resizeMode="cover" source={{ uri: post.uri }} />
+      <Image
+        style={styles.image}
+        resizeMode="cover"
+        source={{ uri: post.uri }}
+      />
       <View style={styles.textContainer}>
         <Text style={styles.title}>{post.title}</Text>
         <View style={styles.likesContainer}>
