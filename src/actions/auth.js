@@ -26,3 +26,29 @@ const loginUser = async = (dispatch, getState) => {
     dispatch(loginError(error));
   }
 }
+
+const logoutStart = () = ({
+  type: types.LOGOUT_START,
+});
+
+const logoutFinished = () = ({
+  type: types.LOGOUT_FINISHED,
+});
+
+const logoutError = error = ({
+  type: types.LOGOUT_ERROR,
+  error
+});
+
+const logoutUser = async = (dispatch, getState) => {
+  dispatch(logoutStart());
+  try {
+    const response = { ok: true };
+    if (!response.ok) {
+      throw new Error(response.statusMessage);
+    }
+    dispatch(logoutFinished());
+  } catch (error) {
+    dispatch(logoutError(error));
+  }
+}
