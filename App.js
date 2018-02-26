@@ -24,13 +24,8 @@ class App extends Component {
     this.authUnsubscriber = null;
     this.state = {
       posts: [],
-      loading: true,
-      loggingIn: false,
-      user: null,
       emailValue: '',
       passwordValue: '',
-      hasError: false,
-      error: '',
     };
   }
 
