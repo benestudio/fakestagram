@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  View,
-  TextInput,
-  Button,
-  ActivityIndicator,
-  Text,
-} from 'react-native';
+import { View, TextInput, Button, ActivityIndicator, Text } from 'react-native';
+import { connect } from 'react-redux';
 
 const Login = ({
   onPress,
@@ -14,7 +9,7 @@ const Login = ({
   onChange,
   loggingIn,
   hasError,
-  errorMessage
+  errorMessage,
 }) => {
   return (
     <View>
@@ -35,12 +30,15 @@ const Login = ({
         onChangeText={e => onChange(e, 'password')}
         placeholder="Password"
       />
-      <Button title="Login" onPress={onPress}/>
+      <Button title="Login" onPress={onPress} />
       {loggingIn && <ActivityIndicator size="large" />}
       {hasError && <Text>{errorMessage}</Text>}
     </View>
   );
 };
 
-export { Login };
-export default {};
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

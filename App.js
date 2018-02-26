@@ -8,16 +8,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/lib/integration/react';
+import { connect } from 'react-redux';
 
-import configureStore from './src/config/store';
-import { Login, Post } from './src';
+import Login from './src/screens/Login';
+import Post from './src/screens/Post';
 import { styles } from './styles';
+import { loginUser, logoutUser } from './src/actions/auth';
 
-const { store, persistor } = configureStore();
-
-export default class App extends Component {
+class App extends Component {
   constructor() {
     super();
     this.ref = firebase.firestore().collection('posts');
@@ -118,46 +116,51 @@ export default class App extends Component {
     }
 
     return (
-      <Provider store={store}>
-        <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
-          <View style={styles.container}>
-            <View style={styles.headerContainer}>
-              <Text style={styles.headerText}>Fakestagram</Text>
-              {this.state.user && (
-                <TouchableOpacity
-                  style={styles.headerButton}
-                  onPress={() => firebase.auth().signOut()}>
-                  <Text>Logout</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-            {this.state.user ? (
-              <FlatList
-                data={this.state.posts}
-                renderItem={({ item }) => <Post post={item} />}
-                ListFooterComponent={
-                  <Button
-                    title="Add random post"
-                    onPress={() => this.addRandomPost()}
-                  />
-                }
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Fakestagram</Text>
+          {this.state.user && (
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={() => firebase.auth().signOut()}>
+              <Text>Logout</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        {this.state.user ? (
+          <FlatList
+            data={this.state.posts}
+            renderItem={({ item }) => <Post post={item} />}
+            ListFooterComponent={
+              <Button
+                title="Add random post"
+                onPress={() => this.addRandomPost()}
               />
-            ) : (
-              <Login
-                emailValue={this.state.emailValue}
-                passwordValue={this.state.passwordValue}
-                onChange={(e, type) => this.onChangeLogin(e, type)}
-                loggingIn={this.state.loggingIn}
-                hasError={this.state.hasError}
-                errorMessage={this.state.error}
-                onPress={() =>
-                  this.setState(state => ({ loggingIn: true }), this.onLogin)
-                }
-              />
-            )}
-          </View>
-        </PersistGate>
-      </Provider>
+            }
+          />
+        ) : (
+          <Login
+            emailValue={this.state.emailValue}
+            passwordValue={this.state.passwordValue}
+            onChange={(e, type) => this.onChangeLogin(e, type)}
+            loggingIn={this.state.loggingIn}
+            hasError={this.state.hasError}
+            errorMessage={this.state.error}
+            onPress={() =>
+              this.setState(state => ({ loggingIn: true }), this.onLogin)
+            }
+          />
+        )}
+      </View>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.loggedIn,
+  posts: state.posts.data,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

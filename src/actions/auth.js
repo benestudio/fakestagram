@@ -1,20 +1,20 @@
 import types from './types';
 
-const loginStart = () = ({
+const loginStart = () => ({
   type: types.LOGIN_START,
 });
 
-const loginFinished = user = ({
+const loginFinished = user => ({
   type: types.LOGIN_FINISHED,
-  user
+  user,
 });
 
-const loginError = error = ({
+const loginError = error => ({
   type: types.LOGIN_ERROR,
-  error
+  error,
 });
 
-const loginUser = async = (dispatch, getState) => {
+export const loginUser = async => (dispatch, getState) => {
   dispatch(loginStart());
   try {
     const response = { ok: true, user: 'hello' };
@@ -25,22 +25,22 @@ const loginUser = async = (dispatch, getState) => {
   } catch (error) {
     dispatch(loginError(error));
   }
-}
+};
 
-const logoutStart = () = ({
+const logoutStart = () => ({
   type: types.LOGOUT_START,
 });
 
-const logoutFinished = () = ({
+const logoutFinished = () => ({
   type: types.LOGOUT_FINISHED,
 });
 
-const logoutError = error = ({
+const logoutError = error => ({
   type: types.LOGOUT_ERROR,
-  error
+  error,
 });
 
-const logoutUser = async = (dispatch, getState) => {
+export const logoutUser = async => (dispatch, getState) => {
   dispatch(logoutStart());
   try {
     const response = { ok: true };
@@ -51,4 +51,4 @@ const logoutUser = async = (dispatch, getState) => {
   } catch (error) {
     dispatch(logoutError(error));
   }
-}
+};

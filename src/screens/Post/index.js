@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
+import { connect } from 'react-redux';
+
 import { styles } from '../../../styles';
 
 const Post = ({ post }) => {
@@ -20,5 +22,8 @@ const Post = ({ post }) => {
   );
 };
 
-export { Post };
-export default {};
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post);

@@ -1,20 +1,20 @@
 import types from './types';
 
-const fetchPostsStart = () = ({
+const fetchPostsStart = () => ({
   type: types.FETCH_POSTS_START,
 });
 
-const fetchPostsFinished = data = ({
+const fetchPostsFinished = data => ({
   type: types.FETCH_POSTS_FINISHED,
-  data
+  data,
 });
 
-const fetchPostsError = error = ({
+const fetchPostsError = error => ({
   type: types.FETCH_POSTS_ERROR,
-  error
+  error,
 });
 
-const fetchPosts = async = (dispatch, getState) => {
+export const fetchPosts = async => (dispatch, getState) => {
   dispatch(fetchPostsStart());
   try {
     const response = { ok: true, user: 'hello' };
@@ -25,23 +25,23 @@ const fetchPosts = async = (dispatch, getState) => {
   } catch (error) {
     dispatch(fetchPostsError(error));
   }
-}
+};
 
-const addPostStart = () = ({
+const addPostStart = () => ({
   type: types.ADD_POST_START,
 });
 
-const addPostFinished = data = ({
+const addPostFinished = data => ({
   type: types.ADD_POST_FINISHED,
-  data
+  data,
 });
 
-const addPostError = error = ({
+const addPostError = error => ({
   type: types.ADD_POST_ERROR,
-  error
+  error,
 });
 
-const addPost = async = (dispatch, getState) => {
+export const addPost = async => (dispatch, getState) => {
   dispatch(addPostStart());
   try {
     const response = { ok: true };
@@ -52,4 +52,4 @@ const addPost = async = (dispatch, getState) => {
   } catch (error) {
     dispatch(addPostError(error));
   }
-}
+};
