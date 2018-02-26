@@ -26,7 +26,7 @@ export const loginUser = (email, pass) => async (dispatch, getState) => {
     if (response.error) {
       throw new Error(response);
     }
-    dispatch(loginFinished(response.user));
+    dispatch(loginFinished(response._user));
   } catch (error) {
     console.log(error);
     dispatch(loginError(error));
