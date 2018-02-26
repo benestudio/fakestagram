@@ -23,7 +23,6 @@ class App extends Component {
     this.firestoreUnsubscriber = null;
     this.authUnsubscriber = null;
     this.state = {
-      posts: [],
       emailValue: '',
       passwordValue: '',
     };
@@ -31,7 +30,7 @@ class App extends Component {
 
   componentDidMount() {
     this.authUnsubscriber = firebase.auth().onAuthStateChanged(user => {
-      this.setState({ user });
+      console.log(user);
     });
     this.firestoreUnsubscriber = this.ref.onSnapshot(this.onCollectionUpdate);
   }
@@ -45,32 +44,12 @@ class App extends Component {
     }
   }
 
-  onCollectionUpdate = querySnapshot => {
-    const posts = [];
-    querySnapshot.forEach(doc => {
-      const { uri, likes, title } = doc.data();
-      posts.push({
-        key: doc.id, // Document ID
-        doc, // DocumentSnapshot
-        title,
-        uri,
-        likes,
-      });
-    });
-    this.setState({
-      posts,
-      loading: false,
-    });
+  onCollectionUpdate = async querySnapshot => {
+    await this.props.fetchPosts(querySnapshot);
   };
 
   addRandomPost = () => {
-    this.ref.add({
-      title: 'Added post by random button',
-      likes: Math.floor(Math.random() * 10 + 1),
-      uri: `https://picsum.photos/200/300?image=${Math.floor(
-        Math.random() * 100 + 1
-      )}`,
-    });
+    this.props.addPost(this.ref);
   };
 
   onLogin = async () => {
@@ -116,13 +95,10 @@ class App extends Component {
         </View>
         {this.props.auth.loggedIn ? (
           <FlatList
-            data={this.state.posts}
+            data={this.props.posts.data}
             renderItem={({ item }) => <Post post={item} />}
             ListFooterComponent={
-              <Button
-                title="Add random post"
-                onPress={() => this.addRandomPost()}
-              />
+              <Button title="Add random post" onPress={this.addRandomPost} />
             }
           />
         ) : (

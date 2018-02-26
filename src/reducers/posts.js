@@ -41,12 +41,10 @@ export default (state = initialState, action) => {
       };
     }
     case types.ADD_POST_FINISHED: {
-      const { data } = action;
       return {
         ...state,
         isFetching: false,
         loggedIn: true,
-        data: [...initialState.data, ...data],
       };
     }
     case types.ADD_POST_ERROR: {
