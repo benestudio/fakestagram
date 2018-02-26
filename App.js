@@ -14,6 +14,7 @@ import Login from './src/screens/Login';
 import Post from './src/screens/Post';
 import { styles } from './styles';
 import { loginUser, logoutUser } from './src/actions/auth';
+import { addPost, fetchPosts } from './src/actions/posts';
 
 class App extends Component {
   constructor() {
@@ -157,10 +158,15 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.loggedIn,
-  posts: state.posts.data,
+  auth: state.auth,
+  posts: state.posts,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  loginUser,
+  logoutUser,
+  addPost,
+  fetchPosts,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

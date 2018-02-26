@@ -1,3 +1,5 @@
+import firebase from 'react-native-firebase';
+
 import types from './types';
 
 const loginStart = () => ({
@@ -14,7 +16,7 @@ const loginError = error => ({
   error,
 });
 
-export const loginUser = async => (dispatch, getState) => {
+export const loginUser = async (email, pass) => (dispatch, getState) => {
   dispatch(loginStart());
   try {
     const response = { ok: true, user: 'hello' };

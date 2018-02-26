@@ -1,3 +1,5 @@
+import firebase from 'react-native-firebase';
+
 import types from './types';
 
 const fetchPostsStart = () => ({
