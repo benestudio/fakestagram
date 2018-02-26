@@ -8,9 +8,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import firebase from 'react-native-firebase';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 
+import configureStore from './src/config/store';
 import { Login, Post } from './src';
 import { styles } from './styles';
+
+const { store, persistor } = configureStore();
 
 export default class App extends Component {
   constructor() {
@@ -113,42 +118,46 @@ export default class App extends Component {
     }
 
     return (
-      <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Fakestagram</Text>
-          {this.state.user && (
-            <TouchableOpacity
-              style={styles.headerButton}
-              onPress={() => firebase.auth().signOut()}>
-              <Text>Logout</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        {this.state.user ? (
-          <FlatList
-            data={this.state.posts}
-            renderItem={({ item }) => <Post post={item} />}
-            ListFooterComponent={
-              <Button
-                title="Add random post"
-                onPress={() => this.addRandomPost()}
+      <Provider store={store}>
+        <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+          <View style={styles.container}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerText}>Fakestagram</Text>
+              {this.state.user && (
+                <TouchableOpacity
+                  style={styles.headerButton}
+                  onPress={() => firebase.auth().signOut()}>
+                  <Text>Logout</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            {this.state.user ? (
+              <FlatList
+                data={this.state.posts}
+                renderItem={({ item }) => <Post post={item} />}
+                ListFooterComponent={
+                  <Button
+                    title="Add random post"
+                    onPress={() => this.addRandomPost()}
+                  />
+                }
               />
-            }
-          />
-        ) : (
-          <Login
-            emailValue={this.state.emailValue}
-            passwordValue={this.state.passwordValue}
-            onChange={(e, type) => this.onChangeLogin(e, type)}
-            loggingIn={this.state.loggingIn}
-            hasError={this.state.hasError}
-            errorMessage={this.state.error}
-            onPress={() =>
-              this.setState(state => ({ loggingIn: true }), this.onLogin)
-            }
-          />
-        )}
-      </View>
+            ) : (
+              <Login
+                emailValue={this.state.emailValue}
+                passwordValue={this.state.passwordValue}
+                onChange={(e, type) => this.onChangeLogin(e, type)}
+                loggingIn={this.state.loggingIn}
+                hasError={this.state.hasError}
+                errorMessage={this.state.error}
+                onPress={() =>
+                  this.setState(state => ({ loggingIn: true }), this.onLogin)
+                }
+              />
+            )}
+          </View>
+        </PersistGate>
+      </Provider>
     );
   }
 }
