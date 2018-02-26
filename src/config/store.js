@@ -16,6 +16,7 @@ if (process.env.NODE_ENV === 'development') {
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['auth', 'posts'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

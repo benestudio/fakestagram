@@ -5,7 +5,7 @@ const initialState = {
   isFetching: false,
   hasError: false,
   errorMessage: '',
-  user: null
+  user: null,
 };
 
 export default (state = initialState, action) => {
@@ -13,7 +13,7 @@ export default (state = initialState, action) => {
     case types.LOGIN_START: {
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     }
     case types.LOGIN_FINISHED: {
@@ -22,7 +22,7 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: false,
         loggedIn: true,
-        user
+        user,
       };
     }
     case types.LOGIN_ERROR: {
@@ -33,18 +33,18 @@ export default (state = initialState, action) => {
         loggedIn: false,
         hasError: true,
         user: null,
-        errorMessage: error
+        errorMessage: error.message,
       };
     }
     case types.LOGOUT_START: {
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     }
     case types.LOGOUT_FINISHED: {
       return {
-        ...initialState
+        ...initialState,
       };
     }
     case types.LOGOUT_ERROR: {
@@ -54,7 +54,7 @@ export default (state = initialState, action) => {
         isFetching: false,
         loggedIn: true,
         hasError: true,
-        errorMessage: error
+        errorMessage: error,
       };
     }
     default: {

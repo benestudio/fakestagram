@@ -80,31 +80,22 @@ class App extends Component {
 
   onLogin = async () => {
     try {
-      const response = await firebase
-        .auth()
-        .signInWithEmailAndPassword(
-          this.state.emailValue,
-          this.state.passwordValue
-        );
+      const response = await this.props.loginUser(
+        this.state.emailValue,
+        this.state.passwordValue
+      );
       console.log(response);
-      this.setState({
-        loggingIn: false,
-        emailValue: '',
-        passwordValue: '',
-        hasError: false,
-        error: '',
-      });
     } catch (error) {
       console.log(error);
-      this.setState({
-        loggingIn: false,
-        error: error.toString(),
-        hasError: true,
-      });
     }
-    this.setState({
-      loggingIn: false,
-    });
+  };
+
+  onLogout = async () => {
+    try {
+      await this.props.logoutUser();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   onChangeLogin = (e, type) => {
@@ -112,7 +103,7 @@ class App extends Component {
   };
 
   render() {
-    if (this.state.loading) {
+    if (this.props.auth.isFetching) {
       return <ActivityIndicator size="large" />;
     }
 
@@ -120,15 +111,15 @@ class App extends Component {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Fakestagram</Text>
-          {this.state.user && (
+          {this.props.auth.loggedIn && (
             <TouchableOpacity
               style={styles.headerButton}
-              onPress={() => firebase.auth().signOut()}>
+              onPress={this.onLogout}>
               <Text>Logout</Text>
             </TouchableOpacity>
           )}
         </View>
-        {this.state.user ? (
+        {this.props.auth.loggedIn ? (
           <FlatList
             data={this.state.posts}
             renderItem={({ item }) => <Post post={item} />}
@@ -144,12 +135,10 @@ class App extends Component {
             emailValue={this.state.emailValue}
             passwordValue={this.state.passwordValue}
             onChange={(e, type) => this.onChangeLogin(e, type)}
-            loggingIn={this.state.loggingIn}
-            hasError={this.state.hasError}
-            errorMessage={this.state.error}
-            onPress={() =>
-              this.setState(state => ({ loggingIn: true }), this.onLogin)
-            }
+            loggingIn={this.props.auth.isFetching}
+            hasError={this.props.auth.hasError}
+            errorMessage={this.props.auth.errorMessage}
+            onPress={this.onLogin}
           />
         )}
       </View>

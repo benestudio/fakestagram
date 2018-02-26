@@ -16,15 +16,19 @@ const loginError = error => ({
   error,
 });
 
-export const loginUser = async (email, pass) => (dispatch, getState) => {
+export const loginUser = (email, pass) => async (dispatch, getState) => {
   dispatch(loginStart());
   try {
-    const response = { ok: true, user: 'hello' };
-    if (!response.ok) {
-      throw new Error(response.statusMessage);
+    const response = await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, pass);
+    console.log(response);
+    if (response.error) {
+      throw new Error(response);
     }
     dispatch(loginFinished(response.user));
   } catch (error) {
+    console.log(error);
     dispatch(loginError(error));
   }
 };
@@ -42,13 +46,10 @@ const logoutError = error => ({
   error,
 });
 
-export const logoutUser = async => (dispatch, getState) => {
+export const logoutUser = () => async (dispatch, getState) => {
   dispatch(logoutStart());
   try {
-    const response = { ok: true };
-    if (!response.ok) {
-      throw new Error(response.statusMessage);
-    }
+    firebase.auth().signOut();
     dispatch(logoutFinished());
   } catch (error) {
     dispatch(logoutError(error));
